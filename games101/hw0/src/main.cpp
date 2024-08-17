@@ -1,23 +1,24 @@
 #include <cmath>
-#include "Eigen/Core"
-#include "Eigen/Dense"
 #include <iostream>
 
-int main(){
+#include "Eigen/Core"
+#include "Eigen/Dense"
+
+int main() {
     // Basic Example of cpp
     std::cout << "Example of cpp \n";
     float a = 1.0, b = 2.0;
     std::cout << a << std::endl;
-    std::cout << a/b << std::endl;
+    std::cout << a / b << std::endl;
     std::cout << std::sqrt(b) << std::endl;
     std::cout << std::acos(-1) << std::endl;
-    std::cout << std::sin(30.0/180.0*acos(-1)) << std::endl;
+    std::cout << std::sin(30.0 / 180.0 * acos(-1)) << std::endl;
 
     // Example of vector
     std::cout << "Example of vector \n";
     // vector definition
-    Eigen::Vector3f v(1.0f,2.0f,3.0f);
-    Eigen::Vector3f w(1.0f,0.0f,0.0f);
+    Eigen::Vector3f v(1.0f, 2.0f, 3.0f);
+    Eigen::Vector3f w(1.0f, 0.0f, 0.0f);
     // vector output
     std::cout << "Example of output \n";
     std::cout << v << std::endl;
@@ -32,7 +33,7 @@ int main(){
     // Example of matrix
     std::cout << "Example of matrix \n";
     // matrix definition
-    Eigen::Matrix3f i,j;
+    Eigen::Matrix3f i, j;
     i << 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0;
     j << 2.0, 3.0, 1.0, 4.0, 6.0, 5.0, 9.0, 7.0, 8.0;
     // matrix output
@@ -43,17 +44,16 @@ int main(){
     // matrix multiply i * j
     // matrix multiply vector i * v
 
-    using std::sin;
     using std::cos;
-    #define PI 3.1415926
+    using std::sin;
+#define PI 3.1415926
 
-    Eigen::Vector3f point(1.0f,2.0f, 1);
+    Eigen::Vector3f point(1.0f, 2.0f, 1);
     Eigen::Matrix3f transfor;
-    transfor << cos(PI/4), -sin(PI/4), 1,
-                sin(PI/4), cos(PI/4),  2,
-                0,            0,            1;
+    transfor << cos(PI / 4), -sin(PI / 4), 1, sin(PI / 4), cos(PI / 4), 2, 0, 0,
+        1;
     std::cout << point << std::endl;
-    std::cout << transfor * point<< std::endl; 
+    std::cout << transfor * point << std::endl;
 
     return 0;
 }
