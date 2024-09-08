@@ -1,0 +1,16 @@
+[
+{
+  "directory": "/home/m1234n/learning/games101/hw1",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "-Ibuild/../..", "-I", "/usr/include/opencv4", "-I", "/home/m1234n/.xmake/packages/f/ffmpeg/7.0/927a7605f9ef47db9de73f45b4a37225/include", "-I", "/home/m1234n/.xmake/packages/l/libdrm/2.4.118/1b3643c7b5084929bfbf9a3bd621b192/include", "-I", "/home/m1234n/.xmake/packages/l/libdrm/2.4.118/1b3643c7b5084929bfbf9a3bd621b192/include/libdrm", "-DNDEBUG", "-o", "build/.objs/Rasterizer/linux/x86_64/release/src/Triangle.cpp.o", "src/Triangle.cpp"],
+  "file": "src/Triangle.cpp"
+},
+{
+  "directory": "/home/m1234n/learning/games101/hw1",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "-Ibuild/../..", "-I", "/usr/include/opencv4", "-I", "/home/m1234n/.xmake/packages/f/ffmpeg/7.0/927a7605f9ef47db9de73f45b4a37225/include", "-I", "/home/m1234n/.xmake/packages/l/libdrm/2.4.118/1b3643c7b5084929bfbf9a3bd621b192/include", "-I", "/home/m1234n/.xmake/packages/l/libdrm/2.4.118/1b3643c7b5084929bfbf9a3bd621b192/include/libdrm", "-DNDEBUG", "-o", "build/.objs/Rasterizer/linux/x86_64/release/src/rasterizer.cpp.o", "src/rasterizer.cpp"],
+  "file": "src/rasterizer.cpp"
+},
+{
+  "directory": "/home/m1234n/learning/games101/hw1",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-std=c++17", "-Ibuild/../..", "-I", "/usr/include/opencv4", "-I", "/home/m1234n/.xmake/packages/f/ffmpeg/7.0/927a7605f9ef47db9de73f45b4a37225/include", "-I", "/home/m1234n/.xmake/packages/l/libdrm/2.4.118/1b3643c7b5084929bfbf9a3bd621b192/include", "-I", "/home/m1234n/.xmake/packages/l/libdrm/2.4.118/1b3643c7b5084929bfbf9a3bd621b192/include/libdrm", "-DNDEBUG", "-o", "build/.objs/Rasterizer/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
+  "file": "src/main.cpp"
+}]
