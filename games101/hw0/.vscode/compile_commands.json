@@ -1,6 +1,0 @@
-[
-{
-  "directory": "/home/m1234n/learning/games101/hw0",
-  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-fvisibility=hidden", "-fvisibility-inlines-hidden", "-O3", "-Ibuild/../..", "-DNDEBUG", "-o", "build/.objs/Transformation/linux/x86_64/release/src/main.cpp.o", "src/main.cpp"],
-  "file": "src/main.cpp"
-}]
