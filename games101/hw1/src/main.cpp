@@ -24,7 +24,12 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle) {
     // TODO: Implement this function
     // Create the model matrix for rotating the triangle around the Z axis.
     // Then return it.
+    double angle = rotation_angle / 180 * MY_PI;
+    Eigen::Matrix4f translate;
+    translate << std::cos(angle), -std::sin(angle), 0, 0, std::sin(angle),
+        std::cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
 
+    model = translate * model;
     return model;
 }
 
@@ -37,8 +42,27 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     // TODO: Implement this function
     // Create the projection matrix for the given parameters.
     // Then return it.
+    Eigen::Matrix4f persp, ortho, trans;
+    persp << zNear, 0, 0, 0, 0, zNear, 0, 0, 0, 0, zNear + zFar, -zNear * zFar,
+        0, 0, 1, 0;
 
-    return projection;
+    double angle = eye_fov / 180 * MY_PI;
+    float xlen, ylen, zlen;
+    ylen = 2 * std::tan(angle / 2) * zNear;
+    xlen = ylen * aspect_ratio;
+    zlen = zFar - zNear;
+
+    ortho << 2 / xlen, 0, 0, 0, 0, 2 / ylen, 0, 0, 0, 0, 2 / zlen, 0, 0, 0, 0,
+        1;
+    trans << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -(zNear + zFar) / 2, 0, 0, 0, 1;
+
+    //为了使得三角形是正着显示的，这里需要把透视矩阵乘以下面这样的矩阵
+    //推导公式时，zNear, zNear取的是负数，传入的是正数，会使投影矩阵的x，y反向
+    Eigen::Matrix4f Mt(4, 4);
+    Mt << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
+
+    projection = ortho * trans * persp * projection;
+    return Mt * projection;
 }
 
 int main(int argc, const char **argv) {
@@ -108,6 +132,7 @@ int main(int argc, const char **argv) {
         } else if (key == 'd') {
             angle -= 10;
         }
+        // break;
     }
 
     return 0;
