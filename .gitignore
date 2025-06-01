@@ -35,3 +35,6 @@
 makefile
 Makefile
 compile_commands.json
+
+# source code
+hello-algo/
