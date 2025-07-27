@@ -1,22 +1,26 @@
 #include "tgaimage.h"
-#include <iostream>
 
-const TGAColor white{255, 255, 255, 255};
-const TGAColor red{255, 0,   0,   255};
+#define OUTPUT_PATH "../../../../output/"
+
+constexpr TGAColor white   = {255, 255, 255, 255}; // attention, BGRA order
+constexpr TGAColor green   = {  0, 255,   0, 255};
+constexpr TGAColor red     = {  0,   0, 255, 255};
+constexpr TGAColor blue    = {255, 128,  64, 255};
+constexpr TGAColor yellow  = {  0, 200, 255, 255};
+
 int main(int argc, char** argv) {
-        TGAImage image(100, 100, TGAImage::RGB);
-        image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
-        for(auto i = 0; i < image.width(); i++) {
-                for(auto j = 0; j < image.height(); j++) {
-                        if (i == j) {
-                                image.set(i, j, white);
-                        } else {
-                                image.set(i, j, red);
-                        }
-                }       
+    constexpr int width  = 64;
+    constexpr int height = 64;
+    TGAImage framebuffer(width, height, TGAImage::RGB);
 
-        }
-        image.write_tga_file("../../../../output/output.tga");
+    int ax =  7, ay =  3;
+    int bx = 12, by = 37;
+    int cx = 62, cy = 53;
 
-        return 0;
+    framebuffer.set(ax, ay, white);
+    framebuffer.set(bx, by, white);
+    framebuffer.set(cx, cy, white);
+
+    framebuffer.write_tga_file(OUTPUT_PATH"framebuffer.tga");
+    return 0;
 }
