@@ -40,6 +40,32 @@ void line(int ax, int ay, int bx, int by, TGAImage &framebuffer, TGAColor color)
     }
 }
 
+
+double signed_triangle_area(int ax, int ay, int bx, int by, int cx, int cy) {
+    return 0.5*((by-ay)*(bx+ax) + (cy-by)*(cx+bx) + (ay-cy)*(ax+cx));
+}
+
+void triangle(int ax, int ay, int bx, int by, int cx, int cy, TGAImage &framebuffer, TGAColor color) {
+    int bbminx = std::min(std::min(ax, bx), cx); // bounding box for the triangle
+    int bbminy = std::min(std::min(ay, by), cy); // defined by its top left and bottom right corners
+    int bbmaxx = std::max(std::max(ax, bx), cx);
+    int bbmaxy = std::max(std::max(ay, by), cy);
+    double total_area = signed_triangle_area(ax, ay, bx, by, cx, cy);
+    if (total_area<1) return; // backface culling + discarding triangles that cover less than a pixel
+
+#pragma omp parallel for
+    for (int x=bbminx; x<=bbmaxx; x++) {
+        for (int y=bbminy; y<=bbmaxy; y++) {
+            // same clockwise winding order as the original triangle
+            double alpha = signed_triangle_area(x, y, bx, by, cx, cy) / total_area;
+            double beta  = signed_triangle_area(x, y, cx, cy, ax, ay) / total_area;
+            double gamma = signed_triangle_area(x, y, ax, ay, bx, by) / total_area;
+            if (alpha<0 || beta<0 || gamma<0) continue; // negative barycentric coordinate => the pixel is outside the triangle
+            framebuffer.set(x, y, color);
+        }
+    }
+}
+
 std::tuple<int,int> project(vec3 v) { // First of all, (x,y) is an orthogonal projection of the vector (x,y,z).
     return { (v.x + 1.) *  width/2,   // Second, since the input models are scaled to have fit in the [-1,1]^3 world coordinates,
              (v.y + 1.) * height/2 }; // we want to shift the vector (x,y) and then scale it to span the entire screen.
@@ -58,15 +84,9 @@ int main(int argc, char** argv) {
         auto [ax, ay] = project(model.vert(i, 0));
         auto [bx, by] = project(model.vert(i, 1));
         auto [cx, cy] = project(model.vert(i, 2));
-        line(ax, ay, bx, by, framebuffer, red);
-        line(bx, by, cx, cy, framebuffer, red);
-        line(cx, cy, ax, ay, framebuffer, red);
-    }
-
-    for (int i=0; i<model.nverts(); i++) { // iterate through all vertices
-        vec3 v = model.vert(i);            // get i-th vertex
-        auto [x, y] = project(v);          // project it to the screen
-        framebuffer.set(x, y, white);
+        TGAColor rnd;
+        for (int c=0; c<3; c++) rnd[c] = std::rand()%255;
+        triangle(ax, ay, bx, by, cx, cy, framebuffer, rnd);
     }
 
     framebuffer.write_tga_file(OUTPUT_PATH"framebuffer.tga");
