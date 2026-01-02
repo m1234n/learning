@@ -103,6 +103,7 @@ template<int nrows,int ncols> struct mat {
         return submatrix.det() * ((row+col)%2 ? -1 : 1);
     }
 
+    // 逆转置矩阵
     mat<nrows,ncols> invert_transpose() const {
         mat<nrows,ncols> adjugate_transpose; // transpose to ease determinant computation, check the last line
         for (int i=nrows; i--; )
@@ -110,10 +111,12 @@ template<int nrows,int ncols> struct mat {
         return adjugate_transpose/(adjugate_transpose[0]*rows[0]);
     }
 
+    // 逆矩阵
     mat<nrows,ncols> invert() const {
         return invert_transpose().transpose();
     }
 
+    // 矩阵转置
     mat<ncols,nrows> transpose() const {
         mat<ncols,nrows> ret;
         for (int i=ncols; i--; )
