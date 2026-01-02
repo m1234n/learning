@@ -7,15 +7,15 @@
 extern mat<4,4> ModelView, Perspective; // "OpenGL" state matrices and
 extern std::vector<double> zbuffer;     // the depth buffer
 
-struct RandomShader : IShader {
+struct PhongShader : IShader {
     const Model &model;
-    TGAColor color = {};
-    vec3 tri[3];  // triangle in eye coordinates
+    vec3 l;          // light direction in eye coordinates
+    vec3 tri[3];     // triangle in eye coordinates
 
-    RandomShader(const Model &m) : model(m) {
+    PhongShader(const vec3 light, const Model &m) : model(m) {
+        l = normalized((ModelView*vec4{light.x, light.y, light.z, 0.}).xyz()); // transform the light vector to view coordinates
     }
 
-    //顶点着色器
     virtual vec4 vertex(const int face, const int vert) {
         vec3 v = model.vert(face, vert);                          // current vertex in object coordinates
         vec4 gl_Position = ModelView * vec4{v.x, v.y, v.z, 1.};
@@ -23,9 +23,16 @@ struct RandomShader : IShader {
         return Perspective * gl_Position;                         // in clip coordinates
     }
 
-    //片元着色器
     virtual std::pair<bool,TGAColor> fragment(const vec3 bar) const {
-        return {false, color};                                    // do not discard the pixel
+        TGAColor gl_FragColor = {255, 255, 255, 255};             // output color of the fragment
+        vec3 n = normalized(cross(tri[1]-tri[0], tri[2]-tri[0])); // triangle normal in eye coordinates
+        vec3 r = normalized(n * (n * l)*2 - l);                   // reflected light direction
+        double ambient = .3;                                      // ambient light intensity
+        double diff = std::max(0., n * l);                        // diffuse light intensity
+        double spec = std::pow(std::max(r.z, 0.), 35);            // specular intensity, note that the camera lies on the z-axis (in eye coordinates), therefore simple r.z, since (0,0,1)*(r.x, r.y, r.z) = r.z
+        for (int channel : {0,1,2})
+            gl_FragColor[channel] *= std::min(1., ambient + .4*diff + .9*spec);
+        return {false, gl_FragColor};                             // do not discard the pixel
     }
 };
 
@@ -37,6 +44,7 @@ int main(int argc, char** argv) {
 
     constexpr int width  = 800;      // output image size
     constexpr int height = 800;
+    constexpr vec3  light{ 1, 1, 1}; // light source
     constexpr vec3    eye{-1, 0, 2}; // camera position
     constexpr vec3 center{ 0, 0, 0}; // camera direction
     constexpr vec3     up{ 0, 1, 0}; // camera up vector
@@ -45,13 +53,12 @@ int main(int argc, char** argv) {
     init_perspective(norm(eye-center));                        // build the Perspective matrix
     init_viewport(width/16, height/16, width*7/8, height*7/8); // build the Viewport    matrix
     init_zbuffer(width, height);
-    TGAImage framebuffer(width, height, TGAImage::RGB, {177, 195, 209, 255});
+    TGAImage framebuffer(width, height, TGAImage::RGB, {0, 0, 0, 0});
 
     for (int m=1; m<argc; m++) {                    // iterate through all input objects
         Model model(argv[m]);                       // load the data
-        RandomShader shader(model);
+        PhongShader shader(light, model);
         for (int f=0; f<model.nfaces(); f++) {      // iterate through all facets
-            shader.color = { std::rand()%255, std::rand()%255, std::rand()%255, 255 };
             Triangle clip = { shader.vertex(f, 0),  // assemble the primitive
                               shader.vertex(f, 1),
                               shader.vertex(f, 2) };
