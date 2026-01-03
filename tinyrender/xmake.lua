@@ -2,6 +2,8 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
 set_languages("cxx17")
 
+add_defines("OUTPUT_PATH=\"output/\"")
+
 target("tinyrender")
     set_kind("binary")
     add_files("src/*.cpp")
