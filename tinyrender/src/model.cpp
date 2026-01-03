@@ -71,7 +71,7 @@ vec4 Model::normal(const int iface, const int nthvert) const {
 
 vec4 Model::normal(const vec2 &uv) const {
     TGAColor c = normalmap.get(uv[0]*normalmap.width(), uv[1]*normalmap.height());
-    return normalized(vec4{(double)c[2],(double)c[1],(double)c[0],0}*2./255. - vec4{1,1,1,0});
+    return normalized(vec4{(double)c[2],(double)c[1],(double)c[0],0}*2./255. - vec4{1,1,1,0}); // 转换到[-1,1]区间
 }
 
 vec2 Model::uv(const int iface, const int nthvert) const {
